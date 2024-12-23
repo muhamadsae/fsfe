@@ -8,20 +8,34 @@
 <body>
 <h2>Inimah latihan websocket</h2>
 <script>
-    const ws = new WebSocket('ws://dev.pionireradigital.id/');
+    let ws;
+    // Tentukan protokol berdasarkan protokol halaman saat ini (ws untuk HTTP, wss untuk HTTPS)
+    const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
 
-ws.onopen = function(event) {
-    console.log('WebSocket connection opened');
-};
+    // Membuka koneksi WebSocket dengan server
+    ws = new WebSocket(`${proto}://${window.location.host}`);
 
-ws.onerror = function(event) {
-    console.error('WebSocket error: ', event);
-};
+    // Menangani pesan yang diterima dari server
+    ws.onmessage = (event) => {
+        console.log('Pesan diterima:', event.data);
+    };
 
-ws.onclose = function(event) {
-    console.log('WebSocket connection closed');
-};
+    // Menangani koneksi yang dibuka
+    ws.onopen = () => {
+        console.log('Koneksi WebSocket terbuka');
+        // Mengirim pesan ke server setelah koneksi terbuka
+        ws.send('Halo server!');
+    };
 
+    // Menangani penutupan koneksi
+    ws.onclose = () => {
+        console.log('Koneksi WebSocket ditutup');
+    };
+
+    // Menangani error
+    ws.onerror = (error) => {
+        console.error('Kesalahan WebSocket:', error);
+    };
 </script>
 </body>
 </html>
